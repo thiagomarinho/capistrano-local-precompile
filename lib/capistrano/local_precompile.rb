@@ -37,7 +37,14 @@ namespace :deploy do
     task :rsync do
       on roles(fetch(:assets_role)), in: :parallel do |server|
         run_locally do
-          remote_shell = %(-e "ssh -p #{server.port}") if server.port
+          ssh_options = [
+            ("-p #{server.port}" if server.port),
+            ("-i #{server.keys}" if server.keys)
+          ].reject { |o| o.to_s.empty? }
+
+          remote_shell = %(-e "ssh #{ssh_options.join(' ')}") unless ssh_options.empty?
+
+          puts remote_shell
 
           commands = []
           commands << "#{fetch(:rsync_cmd)} #{remote_shell} ./#{fetch(:assets_dir)}/ #{server.user}@#{server.hostname}:#{fetch(:assets_release_path)}/#{fetch(:assets_dir)}/" if Dir.exists?(fetch(:assets_dir))
