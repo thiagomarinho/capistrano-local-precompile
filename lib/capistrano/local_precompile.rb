@@ -1,6 +1,7 @@
 namespace :load do
   task :defaults do
     set :assets_dir,       "public/assets"
+    set :assets_release_path, -> { release_path }
     set :packs_dir,        "public/packs"
     set :rsync_cmd,        "rsync -av --delete"
     set :assets_role,      "web"
@@ -39,8 +40,8 @@ namespace :deploy do
           remote_shell = %(-e "ssh -p #{server.port}") if server.port
 
           commands = []
-          commands << "#{fetch(:rsync_cmd)} #{remote_shell} ./#{fetch(:assets_dir)}/ #{server.user}@#{server.hostname}:#{release_path}/#{fetch(:assets_dir)}/" if Dir.exists?(fetch(:assets_dir))
-          commands << "#{fetch(:rsync_cmd)} #{remote_shell} ./#{fetch(:packs_dir)}/ #{server.user}@#{server.hostname}:#{release_path}/#{fetch(:packs_dir)}/" if Dir.exists?(fetch(:packs_dir))
+          commands << "#{fetch(:rsync_cmd)} #{remote_shell} ./#{fetch(:assets_dir)}/ #{server.user}@#{server.hostname}:#{fetch(:assets_release_path)}/#{fetch(:assets_dir)}/" if Dir.exists?(fetch(:assets_dir))
+          commands << "#{fetch(:rsync_cmd)} #{remote_shell} ./#{fetch(:packs_dir)}/ #{server.user}@#{server.hostname}:#{fetch(:assets_release_path)}/#{fetch(:packs_dir)}/" if Dir.exists?(fetch(:packs_dir))
 
           commands.each do |command| 
             if dry_run?

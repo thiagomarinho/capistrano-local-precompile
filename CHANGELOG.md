@@ -1,3 +1,8 @@
+### unreleased:
+
+- Enable configuration of `:assets_release_path` so that it can easily
+  be changed to `:shared_path` or similar
+
 # 1.2.0 / 2019-02-19
 ## Added
 - `dry-run` flag
