@@ -39,7 +39,7 @@ namespace :deploy do
         run_locally do
           ssh_options = [
             ("-p #{server.port}" if server.port),
-            ("-i #{server.keys}" if server.keys)
+            ("-i #{fetch(:ssh_options)[:keys]}" if fetch(:ssh_options)[:keys]),
           ].reject { |o| o.to_s.empty? }
 
           remote_shell = %(-e "ssh #{ssh_options.join(' ')}") unless ssh_options.empty?
