@@ -39,12 +39,10 @@ namespace :deploy do
         run_locally do
           ssh_options = [
             ("-p #{server.port}" if server.port),
-            ("-i #{fetch(:ssh_options)[:keys]}" if fetch(:ssh_options)[:keys]),
+            ("-i #{fetch(:ssh_options)[:keys].first}" if fetch(:ssh_options)[:keys]),
           ].reject { |o| o.to_s.empty? }
 
           remote_shell = %(-e "ssh #{ssh_options.join(' ')}") unless ssh_options.empty?
-
-          puts remote_shell
 
           commands = []
           commands << "#{fetch(:rsync_cmd)} #{remote_shell} ./#{fetch(:assets_dir)}/ #{server.user}@#{server.hostname}:#{fetch(:assets_release_path)}/#{fetch(:assets_dir)}/" if Dir.exists?(fetch(:assets_dir))
